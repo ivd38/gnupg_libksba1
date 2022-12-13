@@ -1,5 +1,6 @@
 GNUPG libksba 1.6.1 overflow
 
+<pre>
 static gpg_error_t
 parse_encrypted_content_info (ksba_reader_t reader,
                               unsigned long *r_len, int *r_ndef,
@@ -28,16 +29,18 @@ parse_encrypted_content_info (ksba_reader_t reader,
     return gpg_error (GPG_ERR_TOO_LARGE);
   memcpy (tmpbuf, ti.buf, ti.nhdr);
 [3]  err = read_buffer (reader, tmpbuf+ti.nhdr, ti.length);
-
+</pre>
 
 _ksba_ber_read_tl() does not verify ti.length, we  can set it to any value.
 If we set it to (unsigned long)-1 check on line #2 will be bypassed.
 As a result we have overflow on line #3.
 
 How to test:
+<pre>
 1. build libksba with asan
 2. edit tests/t-cms-parser.c to open 1.cms file
 3. run tests/t-cms-parser
 
 OR
 $ gpgsm --verify 1.cms
+</pre>
