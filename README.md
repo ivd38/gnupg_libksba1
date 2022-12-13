@@ -32,7 +32,9 @@ parse_encrypted_content_info (ksba_reader_t reader,
 </pre>
 
 _ksba_ber_read_tl() does not verify ti.length, we  can set it to any value.
+
 If we set it to (unsigned long)-1 check on line #2 will be bypassed.
+
 As a result we have overflow on line #3.
 
 How to test:
