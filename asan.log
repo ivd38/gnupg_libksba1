@@ -1,0 +1,64 @@
+=================================================================
+==232457==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fff3aebf774 at pc 0x7f21e8a1959d bp 0x7fff3aebf2e0 sp 0x7fff3aebea88
+WRITE of size 521 at 0x7fff3aebf774 thread T0
+    #0 0x7f21e8a1959c in __interceptor_fread ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:989
+    #1 0x7f21e88faa67 in _ksba_reader_read (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x1ca67)
+    #2 0x7f21e89405e0 in read_buffer (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x625e0)
+    #3 0x7f21e8941e66 in parse_encrypted_content_info (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x63e66)
+    #4 0x7f21e8945d38 in _ksba_cms_parse_enveloped_data_part_1 (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x67d38)
+    #5 0x7f21e8939684 in ct_parse_enveloped_data (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x5b684)
+    #6 0x7f21e89304db in _ksba_cms_parse (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x524db)
+    #7 0x7f21e88f8079 in ksba_cms_parse (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x1a079)
+    #8 0x56208b01efd4 in one_file (/crypto/libksba-1.6.1/tests/t-cms-parser+0x4fd4)
+    #9 0x56208b020135 in main (/crypto/libksba-1.6.1/tests/t-cms-parser+0x6135)
+    #10 0x7f21e86ed082 in __libc_start_main ../csu/libc-start.c:308
+    #11 0x56208b01d72d in _start (/crypto/libksba-1.6.1/tests/t-cms-parser+0x372d)
+
+Address 0x7fff3aebf774 is located in stack of thread T0 at offset 788 in frame
+    #0 0x7f21e89414a2 in parse_encrypted_content_info (/crypto/libksba-1.6.1/src/.libs/libksba.so.8+0x634a2)
+
+  This frame has 7 object(s):
+    [32, 36) 'algo_parmtype' (line 266)
+    [48, 56) 'algo_oid' (line 262)
+    [80, 88) 'algo_parm' (line 263)
+    [112, 120) 'algo_parmlen' (line 264)
+    [144, 152) 'nread' (line 265)
+    [176, 248) 'ti' (line 256)
+    [288, 788) 'tmpbuf' (line 260) <== Memory access at offset 788 overflows this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:989 in __interceptor_fread
+Shadow bytes around the buggy address:
+  0x1000675cfe90: 00 00 00 f2 00 00 00 f2 00 00 00 f2 00 00 00 f2
+  0x1000675cfea0: f2 f2 00 00 00 00 00 00 00 00 00 f2 f2 f2 f2 f2
+  0x1000675cfeb0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000675cfec0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000675cfed0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x1000675cfee0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00[04]f3
+  0x1000675cfef0: f3 f3 f3 f3 f3 f3 f3 f3 00 00 00 00 00 00 00 00
+  0x1000675cff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x1000675cff10: f1 f1 f1 f1 04 f2 04 f2 04 f2 04 f2 00 f2 f2 f2
+  0x1000675cff20: 00 f2 f2 f2 00 f2 f2 f2 00 f2 f2 f2 00 f2 f2 f2
+  0x1000675cff30: 00 f2 f2 f2 00 00 00 00 00 00 00 00 00 f2 f2 f2
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==232457==ABORTING
+
